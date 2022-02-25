@@ -69,7 +69,7 @@ The resolution limit of modularity maximisation is often demonstrated in the rin
 
 ```python
 
-B = 24.                        # number of cliques
+B = 24                         # number of cliques
 nr = 5                         # size of each clique
 G = nx.ring_of_cliques(B,nr)
 
