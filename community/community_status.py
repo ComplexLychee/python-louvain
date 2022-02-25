@@ -1,6 +1,5 @@
 # coding=utf-8
 
-
 class Status(object):
     """
     To handle several data in one struct.
@@ -44,6 +43,9 @@ class Status(object):
         self.gdegrees = dict([])
         self.internals = dict([])
         self.total_weight = graph.size(weight=weight)
+        self.nr_weight = dict([])
+        self.ein_out = [0,0]
+        self.B = 0
         if part is None:
             for node in graph.nodes():
                 self.node2com[node] = count
@@ -55,12 +57,25 @@ class Status(object):
                 self.gdegrees[node] = deg
                 edge_data = graph.get_edge_data(node, node, default={weight: 0})
                 self.loops[node] = float(edge_data.get(weight, 1))
+                self.ein_out[0] += self.loops[node]
                 self.internals[count] = self.loops[node]
+                
+                # initialise node size weight
+                if "weight" not in graph.nodes[node]:
+                    self.nr_weight[node] = 1
+                else:
+                    self.nr_weight[node] = graph.nodes[node]["weight"]
                 count += 1
+            self.B = count
+            self.ein_out[1] += self.total_weight - self.ein_out[0]
         else:
             for node in graph.nodes():
                 com = part[node]
                 self.node2com[node] = com
+                if com not in self.nr_weight:
+                    self.nr_weight[com] = 0
+                self.nr_weight[com] += 1
+                   
                 deg = float(graph.degree(node, weight=weight))
                 self.degrees[com] = self.degrees.get(com, 0) + deg
                 self.gdegrees[node] = deg
@@ -76,3 +91,13 @@ class Status(object):
                         else:
                             inc += float(edge_weight) / 2.
                 self.internals[com] = self.internals.get(com, 0) + inc
+
+            for e in graph.edges():
+                u,v = e
+                r,s = part[u], part[v]
+                
+                if r == s:
+                    self.ein_out[0] += 1
+                else:
+                    self.ein_out[1] += 1
+            self.B = len(self.nr_weight)
