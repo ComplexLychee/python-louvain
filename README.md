@@ -60,7 +60,7 @@ What the last two lines of code do is to run the Louvain algorithm for the unifo
 | Modularity maximisation | uniform PPM |
 :-------------------------:|:-------------------------:
 <img src="/pics/synthetic_modularity_B_9_Q0.512-1.png" width=300><br> | <img src="/pics/synthetic_ppm_B_2_Q0.428_overlap0.355-1.png" width=300><br>
-B = 9, Q = 0.512, accuracy = 0.355 | B = 2, Q = 0.428, accuracy = 0.965
+B = 9, Q = 0.512, accuracy = 0.355[^4] | B = 2, Q = 0.428, accuracy = 0.965[^4]
 
 <br><br>
 Besides overfitting, modularity maximisation paradoxically has the problem of **underfitting**. The underfitting problem of modularity maximisaion leads to a **resolution limit** [4] on the number of detectable communities. 
@@ -107,3 +107,4 @@ Further Explanations
 [^1]: Visuialisations are done with the [graph-tool library](https://graph-tool.skewed.de/static/doc/draw.html).
 [^2]: Louvrain for modularity maximisaion usually starts with a partition that every node is put in its own group. This partition is a basin in the space of the posterior probability of the uniform PPM, therefore is not a good starting point if we want to apply Louvain for the uniform PPM. The defaul initial partition for the function `best_partition_ppm` is a partition that randomly assign each node to one of {1,2,..,N} possible groups, where N is the total number of nodes. In comparison.
 [^3]: The model used to generate the syntehtic network is the uniform planted parittion model. The likelihood function of this model turns out to be equivalent to the modularity measure under certain choice of model parameters. The example used in the text was generated with the assortativity strength parameter `ep` being set to 0.85.
+[^4]: Accuracy is compuated as the [partition overlap](https://graph-tool.skewed.de/static/doc/inference.html?highlight=overlap#graph_tool.inference.partition_overlap) between the true community structure and the inferred network partition. 
