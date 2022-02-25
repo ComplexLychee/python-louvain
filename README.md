@@ -3,7 +3,7 @@ Louvain4ppm
  
 We make use of the Louvain heuristic[1] for maximising modularity[2] to find the maximum a posteriori (MAP) soluton of the ***uniform planted partition model*** (PPM)[3].
 
-The modularity maximisation approach suffers from the **overfitting problem**. Specifically, it returns spurious communities in networks that are known to have no community structure. In comparsion, the uniform PPM is a more robust alternative as it takes statistical significance of its results into account. 
+The modularity maximisation approach suffers from the **overfitting problem**. Specifically, it returns spurious communities in networks that are known to have no community structures. In comparsion, the uniform PPM is a more robust alternative since it takes statistical significance of its results into account. 
 
 For example, the following code implements the Louvain algorithm to obtain the community structure in a Erdos-Renyi (ER) graph. In ER graphs, edges are randomly placed between nodes with the same probability, therefore it is accepted that there is no community structures in ER graphs. In our example, modularity maximisation claims there exist 10 groups with a modularity value Q = 0.461, while the uniform PPM correctly assigns all of the nodes into a single group with Q = 0[^1]. 
 
@@ -55,17 +55,17 @@ b_ppm = community_louvain.best_partition_ppm(partition = b_modularity, G)
 ```
 <br>
 
-What the last two lines of code do is to run the Louvain algorithm for the uniform PPM with the starting point being the partition given by the modularity maximisation[^2]. We do such comparison in a network with two assortative groups[^3]. It is clear that modularity maximisation exaggerates the true structure, while running the Louvain for PPM leads to a partition that is almost identical to the underlying truth.<br><br>
-
+What the last two lines of code do is to run the Louvain algorithm for the uniform PPM with the starting point being the partition given by the modularity maximisation[^2]. We do such comparison in a network with two assortative groups[^3]. Modularity maximisation conludes an overly compliated partition which has 9 groups, while running the Louvain for PPM leads to a partition that is almost identical to the true strucutre.<br><br>
+                                                 
 | Modularity maximisation | uniform PPM |
 :-------------------------:|:-------------------------:
 <img src="/pics/synthetic_modularity_B_9_Q0.512-1.png" width=300><br> | <img src="/pics/synthetic_ppm_B_2_Q0.428_overlap0.355-1.png" width=300><br>
 B = 9, Q = 0.512, accuracy = 0.355[^4] | B = 2, Q = 0.428, accuracy = 0.965[^4]
-
+                                                                                                                                    
 <br><br>
 Besides overfitting, modularity maximisation paradoxically has the problem of **underfitting**. The underfitting problem of modularity maximisaion leads to a **resolution limit** [4] on the number of detectable communities. 
 
-The resolution limit of modularity maximisation is often demonstrated in the ring-of-cliques example. A clique is a fully connected subgraph. Consider a network consisting 24 cliques of size 5. These cliques are ordered and an edge is placed between every pair of neighbouring cliques to form a ring of cliques. Modularity maximisaion counter-intuitively favors a partition that merges every two neighbouring cliques together. In comparison, the uniform PPM has no resolution limit [3] and is able to identify all 24 cliques. 
+The resolution limit of modularity maximisation is often demonstrated in the ring-of-cliques example. A clique is a fully connected subgraph. Consider a network consisting 24 cliques of size 5. These cliques are ordered and an edge is placed between every pair of neighbouring cliques to form a ring of cliques. Modularity maximisaion counter-intuitively favors a partition that merges every two neighbouring cliques together. In comparison, the uniform PPM has no resolution limit [3] and is able to identify all 24 cliques[^5]. 
 
 ```python
 
@@ -95,9 +95,6 @@ print(f"Uniofrm PPM finds {B_ppm} communities with modularity value Q = {Q_ppm}"
 B = 12, Q = 0.8712| B = 24, Q = 0.8674
 
 
-Further Explanations
-----------
-
 #### References:
 <p><a>[1] V. D. Blondel, J.-L. Guillaume, R. Lambiotte, and E. Lefebvre, <em>Fast unfolding of communities in large networks</em>, J. Stat. Mech.: Theory Exp. (2008) P10008. </a>
 <p><a>[2] M. E. J. Newman, <em>Modularity and community structure in networks</em>, Proc. Natl. Acad. Sci. USA 103, 8577 (2006). </a>
@@ -108,3 +105,4 @@ Further Explanations
 [^2]: Louvrain for modularity maximisaion usually starts with a partition that every node is put in its own group. This partition is a basin in the space of the posterior probability of the uniform PPM, therefore is not a good starting point if we want to apply Louvain for the uniform PPM. The defaul initial partition for the function `best_partition_ppm` is a partition that randomly assign each node to one of {1,2,..,N} possible groups, where N is the total number of nodes. In comparison.
 [^3]: The model used to generate the syntehtic network is the uniform planted parittion model. The likelihood function of this model turns out to be equivalent to the modularity measure under certain choice of model parameters. The example used in the text was generated with the assortativity strength parameter `ep` being set to 0.85.
 [^4]: Accuracy is compuated as the [partition overlap](https://graph-tool.skewed.de/static/doc/inference.html?highlight=overlap#graph_tool.inference.partition_overlap) between the true community structure and the inferred network partition. 
+[^5]: Results might vary from time to time because the order of visiting nodes in the search phase of the Louvain algorithm can change. When implementing Louvain for PPM, the defaul initial state is set to be random as well. Therefore, it is worth conducting multiple runs and choose the result with the largest modularity or posterior probability value. 
