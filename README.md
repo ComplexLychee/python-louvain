@@ -1,7 +1,7 @@
 Louvain4ppm
 ===========================
  
-We make use of the Louvain heuristic[1] for maximising modularity[2] to find the maximum a posteriori (MAP) soluton of the ***uniform planted partition model*** (PPM)[3].
+We make use of the Louvain heuristic[1] for maximising modularity[2] to find the maximum a posteriori (MAP) estimate based on the ***uniform planted partition model*** (PPM)[3].
 
 The modularity maximisation approach suffers from the **overfitting problem**. Specifically, it returns spurious communities in networks that are known to have no community structures. In comparsion, the uniform PPM is a more robust alternative since it takes statistical significance of its results into account. 
 
